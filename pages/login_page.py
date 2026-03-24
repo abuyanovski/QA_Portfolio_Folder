@@ -14,7 +14,7 @@ class LoginPage:
     ERROR_MESSAGE = (By.XPATH, "//div[@class='error-message-container error']")
 
 
-    INVENTORY_PAGE_ITEMS =
+    # INVENTORY_PAGE_ITEMS =
 
     def __init__(self, driver):
         self.driver = driver
