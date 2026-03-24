@@ -2,7 +2,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-# == PAGE ACTIONS ==
+#                                           ==COMMON PAGE ACTIONS ==
 class BasePage:
     def __init__(self, driver):
         self.driver = driver
@@ -15,6 +15,19 @@ class BasePage:
         return self.wait.until(
             EC.visibility_of_element_located(locator)
         )
+    def wait_for_clickable(self, locator):
+            return self.wait.until(
+                EC.element_to_be_clickable(locator)
+            )
+
+    def click(self, locator):
+        element = self.wait_for_clickable(locator)
+        element.click()
+
+    def type_text(self, locator):
+            element = self.wait_for_visibility(locator)
+            element.clear()
+            element.send_keys(locator)
 
 
 
