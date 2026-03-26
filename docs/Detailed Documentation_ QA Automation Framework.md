@@ -101,23 +101,25 @@ To create a new Page Object:
 4.  Implement methods that represent user interactions or retrieve information from the page.
 
 **Example (`dashboard_page.py`):**
+
 ```python
 from selenium.webdriver.common.by import By
-from pages.base_page import BasePage
+from pages.inventory_page import BasePage
 
-class DashboardPage(BasePage):
-    WELCOME_MESSAGE = (By.ID, "welcomeMessage")
-    LOGOUT_BUTTON = (By.LINK_TEXT, "Logout")
 
-    def __init__(self, driver):
-        super().__init__(driver)
-        self.url = "/dashboard"
+class DashboardPage (BasePage):
+	WELCOME_MESSAGE = (By.ID, "welcomeMessage")
+	LOGOUT_BUTTON = (By.LINK_TEXT, "Logout")
 
-    def get_welcome_message(self):
-        return self.get_text(self.WELCOME_MESSAGE)
+	def __init__ (self, driver):
+		super ().__init__ (driver)
+		self.url = "/dashboard"
 
-    def click_logout(self):
-        self.click(self.LOGOUT_BUTTON)
+	def get_welcome_message (self):
+		return self.get_text (self.WELCOME_MESSAGE)
+
+	def click_logout (self):
+		self.click (self.LOGOUT_BUTTON)
 ```
 
 ### 4.2 Creating UI Test Cases
