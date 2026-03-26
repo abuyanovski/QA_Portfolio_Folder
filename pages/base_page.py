@@ -1,5 +1,6 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 #                                           ==COMMON PAGE ACTIONS ==
@@ -14,14 +15,20 @@ class BasePage:
     def get_current_url(self):
         return self.driver.current_url
 
+    #                                           ==WAIT ACTIONS ==
     def wait_for_visibility(self, locator):
         return self.wait.until(
             EC.visibility_of_element_located(locator)
         )
 
+    def wait_for_invisibility(self, locator):
+        return self.wait.until(
+            EC.invisibility_of_element_located(locator)
+        )
+
     def wait_for_clickable(self, locator):
-            return self.wait.until(
-                EC.element_to_be_clickable(locator)
+        return self.wait.until(
+            EC.element_to_be_clickable(locator)
             )
 
     def is_element_present(self, locator):
@@ -32,22 +39,20 @@ class BasePage:
         element.click()
 
     def type_text(self, locator, text):
-            element = self.wait_for_visibility(locator)
-            element.clear()
-            element.send_keys(text)
+        element = self.wait_for_visibility(locator)
+        element.clear()
+        element.send_keys(text)
 
+    def get_text(self, locator):
+        element = self.wait_for_visibility(locator)
+        return element.text
 
+    def find_elements(self, locator):
+        return self.driver.find_elements(*locator)
 
-    #
-    # click()
-    # type_text()
-    # wait_for_visibility()
-    # wait_for_clickable()
-    # is_element_present()
-    # get_current_url()
-
-
-
+    def scroll_to_element(self, locator):
+        element = self.wait_for_visibility(locator)
+        ActionChains(self.driver).move_to_element(element).perform()
 
 
 
