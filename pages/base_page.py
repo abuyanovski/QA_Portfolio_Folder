@@ -3,7 +3,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
 
-#                                           ==COMMON PAGE ACTIONS ==
+#                                           == COMMON PAGE ACTIONS ==
 class BasePage:
     def __init__(self, driver):
         self.driver = driver
@@ -15,7 +15,7 @@ class BasePage:
     def get_current_url(self):
         return self.driver.current_url
 
-    #                                           ==WAIT ACTIONS ==
+    #                                          == WAIT ACTIONS ==
     def wait_for_visibility(self, locator):
         return self.wait.until(
             EC.visibility_of_element_located(locator)
