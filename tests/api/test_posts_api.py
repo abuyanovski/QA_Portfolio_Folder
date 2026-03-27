@@ -2,6 +2,10 @@
 import pytest
 from api.base_api_client import BaseApiClient
 
+
+pytestmark = pytest.mark.api
+
+
 class TestPostsApi:
     api_client = BaseApiClient()
 

@@ -1,12 +1,12 @@
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 
+
 class LoginPage(BasePage):
-    #                                        ==PAGE URLs==
+    # == PAGE URL ==
     LOGIN_PAGE_URL = "https://www.saucedemo.com/"
 
-
-    #                                       ==PAGE OBJECTS==
+    # == PAGE OBJECTS ==
     USERNAME_INPUT = (By.XPATH, "//input[@id='user-name']")
     PASSWORD_INPUT = (By.XPATH, "//input[@id='password']")
     LOGIN_BUTTON = (By.CSS_SELECTOR, "#login-button")
@@ -24,5 +24,10 @@ class LoginPage(BasePage):
     def click_login(self):
         self.click(self.LOGIN_BUTTON)
 
+    def login(self, username, password):
+        self.enter_username(username)
+        self.enter_password(password)
+        self.click_login()
 
-
+    def is_error_message_displayed(self):
+        return self.is_element_present(self.ERROR_MESSAGE)
