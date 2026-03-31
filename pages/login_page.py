@@ -31,3 +31,6 @@ class LoginPage(BasePage):
 
     def is_error_message_displayed(self):
         return self.is_element_present(self.ERROR_MESSAGE)
+
+    def get_error_message_text(self):
+        return self.get_text(self.ERROR_MESSAGE)

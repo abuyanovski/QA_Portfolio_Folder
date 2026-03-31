@@ -21,3 +21,21 @@ class TestLogin:
 
         assert not login_page.is_error_message_displayed(), \
             "Unexpected login error message was displayed."
+
+    def test_locked_out_user_denied_access_TC_LOGIN_002(self, driver):
+        login_page = LoginPage(driver)
+
+        login_page.open()
+        login_page.login("locked_out_user", "secret_sauce")
+
+        assert "inventory.html" not in login_page.get_current_url(), \
+            "Locked out user should not be redirected to the inventory page."
+
+        assert login_page.is_error_message_displayed(), \
+            "Expected login error message was not displayed for locked out user."
+
+        assert "locked out" in login_page.get_error_message_text().lower(), \
+            "Expected locked out error message was not displayed."
+
+        assert login_page.get_current_url() == login_page.LOGIN_PAGE_URL, \
+            "Locked out user should remain on the login page."
