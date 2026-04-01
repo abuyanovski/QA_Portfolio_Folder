@@ -7,24 +7,28 @@ from pages.cart_page import CartPage
 
 @pytest.mark.ui
 class TestCart:
-    def test_add_one_item_to_cart_and_verify_badge_and_contents_TC_CART_001(self, driver):
+    def test_add_one_item_to_cart_and_verify_badge_and_contents_TC_CART_001(self, driver, progress_step):
         login_page = LoginPage(driver)
         inventory_page = InventoryPage(driver)
         cart_page = CartPage(driver)
 
+        progress_step("Open the login page and sign in as the standard user.")
         login_page.open()
         login_page.login("standard_user", "secret_sauce")
 
         assert inventory_page.is_loaded(), \
             "Inventory page did not load after login."
 
+        progress_step("Capture the first inventory item details for later validation.")
         expected_item = inventory_page.get_first_inventory_item_data()
 
+        progress_step("Add the first item to the cart and verify the badge count.")
         inventory_page.add_first_item_to_cart()
 
         assert inventory_page.get_cart_badge_count() == "1", \
             "Cart badge did not update to 1 after adding an item."
 
+        progress_step("Open the cart and confirm the selected item details.")
         inventory_page.open_cart()
 
         assert cart_page.is_loaded(), \
