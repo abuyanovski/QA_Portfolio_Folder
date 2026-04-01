@@ -22,6 +22,9 @@ class InventoryPage(BasePage):
     DETAILS_ITEM_DESC = (By.CSS_SELECTOR, ".inventory_details_desc")
     DETAILS_ITEM_PRICE = (By.CSS_SELECTOR, ".inventory_details_price")
 
+    ADD_TO_CART_BUTTON = (By.CSS_SELECTOR, ".btn_inventory")
+    CART_BADGE = (By.CSS_SELECTOR, ".shopping_cart_badge")
+    CART_LINK = (By.CSS_SELECTOR, ".shopping_cart_link")
     BACK_TO_PRODUCTS_BUTTON = (By.ID, "back-to-products")
 
     # == PAGE ACTIONS ==
@@ -71,3 +74,14 @@ class InventoryPage(BasePage):
 
     def click_back_to_products(self):
         self.click(self.BACK_TO_PRODUCTS_BUTTON)
+
+    def add_first_item_to_cart(self):
+        items = self.find_elements(self.INVENTORY_ITEMS)
+        first_item = items[0]
+        first_item.find_element(*self.ADD_TO_CART_BUTTON).click()
+
+    def get_cart_badge_count(self):
+        return self.get_text(self.CART_BADGE)
+
+    def open_cart(self):
+        self.click(self.CART_LINK)
