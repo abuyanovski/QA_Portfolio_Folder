@@ -2,12 +2,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
+from config.config import Config
+
 
 #                                           == COMMON PAGE ACTIONS ==
 class BasePage:
     def __init__(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
+        self.wait = WebDriverWait(driver, Config.EXPLICIT_WAIT)
 
     def open_url(self, url):
         self.driver.get(url)
@@ -53,6 +55,5 @@ class BasePage:
     def scroll_to_element(self, locator):
         element = self.wait_for_visibility(locator)
         ActionChains(self.driver).move_to_element(element).perform()
-
 
 

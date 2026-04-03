@@ -81,5 +81,8 @@ class DriverFactory:
             raise Exception(f'Browser {browser} is not supported')
 
         driver.implicitly_wait(Config.IMPLICIT_WAIT)
-        driver.maximize_window()
+        if Config.HEADLESS:
+            driver.set_window_size(1920, 1080)
+        else:
+            driver.maximize_window()
         return driver

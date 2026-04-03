@@ -18,7 +18,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.x'
+        python-version: '3.12'
 
     - name: Install dependencies
       run: |
@@ -28,11 +28,13 @@ jobs:
     - name: Run Pytest UI tests
       env:
         BASE_URL: https://www.saucedemo.com
+        BROWSER: chrome
         HEADLESS: "true"
       run: |
         pytest tests/ui --json-report --json-report-file=report-ui.json
 
     - name: Upload Pytest UI JSON Report
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: pytest-ui-json-report
