@@ -30,9 +30,7 @@ qa-automation-framework/
 │   ├── config.py
 │   └── conftest.py
 ├── docs/
-│   ├── Detailed Documentation_ QA Automation Framework.md
-│   ├── manual_test_cases.xlsx
-│   └── QA Automation Project with Python, Selenium, and API Testing.md
+│   └── manual_test_cases.xlsx
 ├── pages/
 │   ├── base_page.py
 │   ├── cart_page.py
@@ -155,8 +153,6 @@ Additional supporting material is already included in the repo:
 - `test_artifacts/` for generated/manual QA assets and coverage-related files
 
 Useful files:
-- `docs/Detailed Documentation_ QA Automation Framework.md`
-- `docs/QA Automation Project with Python, Selenium, and API Testing.md`
 - `test_artifacts/api_posts_test_cases.md`
 - `test_artifacts/ui_login_test_cases.md`
 
