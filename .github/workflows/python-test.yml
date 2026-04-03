@@ -1,5 +1,5 @@
 
-name: Python QA Tests
+name: Python UI Tests
 
 on:
   push:
@@ -25,19 +25,18 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run Pytest UI and API tests
+    - name: Run Pytest UI tests
       env:
         BASE_URL: https://www.saucedemo.com
-        API_BASE_URL: https://jsonplaceholder.typicode.com
         HEADLESS: "true"
       run: |
-        pytest --json-report --json-report-file=report.json
+        pytest tests/ui --json-report --json-report-file=report-ui.json
 
-    - name: Upload Pytest JSON Report
+    - name: Upload Pytest UI JSON Report
       uses: actions/upload-artifact@v4
       with:
-        name: pytest-json-report
-        path: report.json
+        name: pytest-ui-json-report
+        path: report-ui.json
 
     # Example of uploading an HTML report if pytest-html is used
     # - name: Generate HTML Report
