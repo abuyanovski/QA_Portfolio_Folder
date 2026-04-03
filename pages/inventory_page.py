@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class InventoryPage(BasePage):
@@ -51,6 +52,7 @@ class InventoryPage(BasePage):
         return prices
 
     def get_first_inventory_item_data(self):
+        self.wait_for_visibility(self.INVENTORY_ITEMS)
         items = self.find_elements(self.INVENTORY_ITEMS)
         first_item = items[0]
 
@@ -61,9 +63,12 @@ class InventoryPage(BasePage):
         }
 
     def click_first_product_name(self):
+        self.wait_for_visibility(self.INVENTORY_ITEMS)
         items = self.find_elements(self.INVENTORY_ITEMS)
         first_item = items[0]
-        first_item.find_element(*self.ITEM_NAME).click()
+        product_name = first_item.find_element(*self.ITEM_NAME)
+        self.wait.until(EC.element_to_be_clickable(product_name)).click()
+        self.wait_for_visibility(self.DETAILS_ITEM_NAME)
 
     def get_product_details_data(self):
         return {
