@@ -1,139 +1,166 @@
-# QA Automation Project with Python, Selenium, and API Testing
+# QA Automation Framework
 
 ## Overview
-This project provides a robust and scalable test automation framework built with Python, Selenium, and the `requests` library for API testing, designed for QA Analyst II level professionals. It follows the Page Object Model (POM) design pattern for UI tests and a dedicated API client for API tests to enhance test maintainability, reduce code duplication, and improve readability. The framework is configured to support multiple browsers and environments, making it flexible for various testing needs.
+This repository is a work in progress QA automation framework built with Python, Pytest, Selenium, and `requests`. It currently covers a small but practical slice of automated UI and API testing, and it will continue to grow to cover more aspects of QA over time.
 
-## Features
-- **Page Object Model (POM):** Organizes UI elements and interactions into classes, promoting reusability and maintainability.
-- **API Testing:** Includes a `BaseApiClient` for structured and reusable API test development using the `requests` library.
-- **Pytest Framework:** Utilizes Pytest for test discovery, execution, and reporting, offering powerful fixtures and plugins.
-- **WebDriver Manager:** Automatically handles browser driver management, eliminating manual downloads and configuration.
-- **Configurable Environment:** Easy configuration of base URLs, browsers, and wait times via `config.py` and environment variables.
-- **Cross-Browser Testing:** Supports Chrome and Firefox out-of-the-box.
-- **Headless Mode:** Option to run browser tests in headless mode for faster execution in CI/CD pipelines.
-- **CI/CD Integration:** Includes a sample GitHub Actions workflow for automated test execution.
+Right now, the project includes:
+- UI automation for Sauce Demo login, inventory, and cart flows
+- API automation for JSONPlaceholder `/posts` endpoints
+- Page Object Model structure for UI tests
+- Shared pytest fixtures and progress logging for clearer test runs
+- Supporting QA assets in `docs/` and `test_artifacts/`
+
+## Current Stack
+- Python
+- Pytest
+- Selenium WebDriver
+- `requests`
+- `webdriver-manager`
+- `pytest-json-report`
 
 ## Project Structure
-```
-qa_automation_project/
+```text
+qa-automation-framework/
 ├── .github/
 │   └── workflows/
-│       └── python-test.yml   # GitHub Actions workflow for CI/CD
+│       └── python-test.yml
 ├── api/
-│   └── base_api_client.py    # Base class for all API interactions
+│   └── base_api_client.py
 ├── config/
-│   └── config.py             # Configuration settings for the framework
+│   ├── config.py
+│   └── conftest.py
+├── docs/
+│   ├── Detailed Documentation_ QA Automation Framework.md
+│   ├── manual_test_cases.xlsx
+│   └── QA Automation Project with Python, Selenium, and API Testing.md
 ├── pages/
-│   ├── base_page.py          # Base class for all Page Objects
-│   └── login_page.py         # Example Page Object for a login page
+│   ├── base_page.py
+│   ├── cart_page.py
+│   ├── inventory_page.py
+│   └── login_page.py
+├── test_artifacts/
+│   ├── api_posts_test_cases.md
+│   ├── ci_cd_tool_recommendation.md
+│   ├── saucedemo_manual_test_cases_regenerated.md
+│   ├── ui_login_test_cases.md
+│   └── matrices/
 ├── tests/
-│   ├── api/                  # Directory for API test suites
-│   │   └── test_posts_api.py # Example API test suite for posts
-│   └── test_login.py         # Example UI test suite for the login page
+│   ├── api/
+│   │   └── test_posts_api.py
+│   └── ui/
+│       ├── test_cart.py
+│       ├── test_inventory.py
+│       └── test_login.py
 ├── utils/
-│   └── driver_factory.py     # Handles WebDriver initialization
-├── conftest.py               # Pytest fixtures for test setup and teardown
-├── requirements.txt          # Python dependencies
-└── README.md                 # Project README file
+│   └── driver_factory.py
+├── conftest.py
+├── pytest.ini
+├── requirements.txt
+└── README.md
 ```
 
-## Setup Instructions
+## Setup
 
 ### Prerequisites
-- Python 3.8+
-- pip (Python package installer)
+- Python 3.9+
+- pip
 
 ### Installation
-1. **Clone the repository:**
+1. Clone the repository:
    ```bash
    git clone <repository_url>
-   cd qa_automation_project
+   cd qa-automation-framework
    ```
-2. **Install dependencies:**
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-## How to Run Tests
+## Configuration
+The framework reads settings from environment variables in `config/config.py`.
 
-### Environment Variables
-You can configure the test execution using environment variables:
-- `BASE_URL`: The base URL of the application under test (default: `http://www.example.com`)
-- `API_BASE_URL`: The base URL for API endpoints (default: `http://jsonplaceholder.typicode.com`)
-- `BROWSER`: The browser to use for UI testing (`chrome` or `firefox`, default: `chrome`)
-- `HEADLESS`: Run browser in headless mode (`True` or `False`, default: `True`)
-- `IMPLICIT_WAIT`: Implicit wait time in seconds (default: `10`)
-- `EXPLICIT_WAIT`: Explicit wait time in seconds (default: `20`)
+Currently used settings:
+- `API_BASE_URL`: API base URL. Default: `http://jsonplaceholder.typicode.com`
+- `BROWSER`: Browser for UI tests. Default: `chrome`
+- `HEADLESS`: Run browser headless. Default: `False`
+- `IMPLICIT_WAIT`: Selenium implicit wait in seconds. Default: `10`
+- `EXPLICIT_WAIT`: Configured explicit wait value in seconds. Default: `20`
+- `SCREENSHOT_PATH`: Screenshot output directory. Default: `screenshots`
+- `LOG_LEVEL`: Logging level placeholder for future expansion. Default: `INFO`
 
-**Example:**
+Notes:
+- `BASE_URL` exists in config, but the current Sauce Demo page objects still use direct page URLs.
+- The GitHub Actions workflow sets `HEADLESS=true` for CI runs.
+
+## Running Tests
+
+### Default Run
+By default, `pytest` runs the UI suite because `pytest.ini` excludes tests marked `api`.
+
 ```bash
-export BASE_URL="https://staging.example.com"\
-       API_BASE_URL="https://api.staging.example.com"\
-       BROWSER="firefox"\
-       HEADLESS="False"
 pytest
 ```
 
-### Running All Tests (UI and API)
-To run all tests in the `tests/` directory:
+### Run UI Tests
 ```bash
-pytest
+pytest tests/ui
 ```
 
-### Running UI Tests Only
-To run tests from the UI test directory:
+### Run API Tests
 ```bash
-pytest tests/test_login.py
+pytest -m api
 ```
 
-### Running API Tests Only
-To run tests from the API test directory:
+### Run UI and API Tests Together
 ```bash
-pytest tests/api/test_posts_api.py
+pytest -m "ui or api"
 ```
 
-### Running Specific Test Files
-To run tests from a specific file:
+### Run Specific Files
 ```bash
-pytest tests/test_login.py
-pytest tests/api/test_posts_api.py
+pytest tests/ui/test_login.py
+pytest tests/ui/test_inventory.py
+pytest tests/ui/test_cart.py
+pytest tests/api/test_posts_api.py -m api
 ```
 
-### Running Specific Test Cases
-To run a specific test method within a file:
+### Run Specific Test Cases
 ```bash
-pytest tests/test_login.py::TestLogin::test_successful_login
-pytest tests/api/test_posts_api.py::TestPostsApi::test_get_single_post
+pytest tests/ui/test_login.py::TestLogin::test_successful_login_TC_LOGIN_001
+pytest tests/api/test_posts_api.py::TestPostsApi::test_get_single_post -m api
 ```
 
-### Generating Reports
-Pytest supports various reporting plugins. For example, to generate an HTML report:
-```bash
-pytest --html=report.html --self-contained-html
-```
+### Test Output
+The current pytest setup prints progress information during execution, including:
+- session start and finish
+- collected test counts
+- per-test start and end status
+- numbered step messages inside tests
 
-## CI/CD with GitHub Actions
-A sample GitHub Actions workflow (`.github/workflows/python-test.yml`) is provided to demonstrate how to integrate this framework into a CI/CD pipeline. This workflow will automatically:
-1.  **Checkout Code:** Retrieve the project source code.
-2.  **Set up Python:** Configure the Python environment.
-3.  **Install Dependencies:** Install all required Python packages from `requirements.txt`.
-4.  **Install Browser:** Install Google Chrome for UI test execution.
-5.  **Run Tests:** Execute both UI (Selenium) and API (requests) tests using Pytest.
-6.  **Upload Reports:** Publish test reports as artifacts, making them accessible for review.
+## CI/CD
+The GitHub Actions workflow in `.github/workflows/python-test.yml` currently:
+- runs on pushes and pull requests to `main`
+- installs dependencies
+- executes pytest with JSON reporting enabled
+- uploads `report.json` as a build artifact
 
-**To use the GitHub Actions workflow:**
-1.  Push your project to a GitHub repository.
-2.  The workflow will automatically trigger on pushes to the `main` branch.
-3.  Monitor the workflow runs in the "Actions" tab of your GitHub repository.
+The workflow sets:
+- `BASE_URL=https://www.saucedemo.com`
+- `API_BASE_URL=https://jsonplaceholder.typicode.com`
+- `HEADLESS=true`
 
-## Best Practices for QA Analyst II
-- **Maintainability:** Adhere strictly to the Page Object Model for UI tests and create dedicated API clients for API tests. Ensure objects are clean, concise, and only contain elements/methods related to their specific domain.
-- **Readability:** Write clear, self-documenting code. Use meaningful variable and function names. Add comments where necessary to explain complex logic.
-- **Reusability:** Design reusable components and utility functions to avoid code duplication. Leverage Pytest fixtures for common setup and teardown tasks.
-- **Robustness:** Implement appropriate waits (explicit waits are preferred) to handle dynamic web elements and improve UI test stability. For API tests, handle various HTTP response codes and error scenarios gracefully.
-- **Error Handling:** Implement logging and screenshot capabilities on UI test failures to aid in debugging. For API tests, log request/response details for failed tests.
-- **Version Control:** Use Git for version control, commit frequently with descriptive messages, and follow a branching strategy.
-- **CI/CD Integration:** Design tests to be easily integrated into Continuous Integration/Continuous Deployment pipelines for automated execution.
+## Documentation and QA Assets
+Additional supporting material is already included in the repo:
+- `docs/` for higher-level project documentation and manual test materials
+- `test_artifacts/` for generated/manual QA assets and coverage-related files
 
-## Further Documentation
-For more in-depth information on the framework's design principles, advanced usage, and contribution guidelines, please refer to `DOCUMENTATION.md`.
+Useful files:
+- `docs/Detailed Documentation_ QA Automation Framework.md`
+- `docs/QA Automation Project with Python, Selenium, and API Testing.md`
+- `test_artifacts/api_posts_test_cases.md`
+- `test_artifacts/ui_login_test_cases.md`
+
+## Notes
+- The framework is intentionally small at this stage and is being built out incrementally.
+- Some config values and support files are in place for future expansion even if they are not fully wired into every test yet.
+- The current automated coverage is focused on a few representative UI and API flows rather than full application coverage.
