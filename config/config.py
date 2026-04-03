@@ -3,7 +3,7 @@ import os
 class Config:
     BASE_URL = os.getenv("BASE_URL", "http://www.example.com")
     BROWSER = os.getenv("BROWSER", "chrome")
-    HEADLESS = os.getenv("HEADLESS", "False").lower() == "true"
+    HEADLESS = os.getenv("HEADLESS", "False").lower() == "false"
     IMPLICIT_WAIT = int(os.getenv("IMPLICIT_WAIT", "10"))
     EXPLICIT_WAIT = int(os.getenv("EXPLICIT_WAIT", "20"))
     SCREENSHOT_PATH = os.getenv("SCREENSHOT_PATH", "screenshots")
