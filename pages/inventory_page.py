@@ -41,6 +41,21 @@ class InventoryPage(BasePage):
         dropdown = self.wait_for_visibility(self.SORT_DROPDOWN)
         Select(dropdown).select_by_visible_text("Price (low to high)")
 
+        def _prices_are_sorted(drv):
+            n_items = len(drv.find_elements(*self.INVENTORY_ITEMS))
+            if n_items == 0:
+                return False
+            els = drv.find_elements(*self.ITEM_PRICES)
+            if len(els) != n_items:
+                return False
+            try:
+                values = [float(e.text.replace("$", "").strip()) for e in els]
+            except ValueError:
+                return False
+            return values == sorted(values)
+
+        self.wait.until(_prices_are_sorted)
+
     def get_displayed_product_prices(self):
         price_elements = self.find_elements(self.ITEM_PRICES)
         prices = []
@@ -81,9 +96,9 @@ class InventoryPage(BasePage):
         self.click(self.BACK_TO_PRODUCTS_BUTTON)
 
     def add_first_item_to_cart(self):
-        items = self.find_elements(self.INVENTORY_ITEMS)
-        first_item = items[0]
-        first_item.find_element(*self.ADD_TO_CART_BUTTON).click()
+        self.wait_for_visibility(self.INVENTORY_ITEMS)
+        first_add = self.wait.until(EC.element_to_be_clickable(self.ADD_TO_CART_BUTTON))
+        first_add.click()
 
     def get_cart_badge_count(self):
         return self.get_text(self.CART_BADGE)

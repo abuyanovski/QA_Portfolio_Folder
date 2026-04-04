@@ -65,6 +65,18 @@ class DriverFactory:
     def get_driver(browser):
         if browser == 'chrome':
             options = webdriver.ChromeOptions()
+            # Avoid Chrome Password Manager / breach-check modals blocking saucedemo logins
+            # (common with well-known demo passwords like secret_sauce).
+            options.add_experimental_option(
+                "prefs",
+                {
+                    "credentials_enable_service": False,
+                    "profile.password_manager_enabled": False,
+                    "profile.password_manager_leak_detection": False,
+                },
+            )
+            # Backup when prefs are ignored on some Chrome builds (breach / “change password” UI).
+            options.add_argument("--disable-features=PasswordLeakDetection")
             if Config.HEADLESS:
                 options.add_argument('--headless')
                 options.add_argument('--no-sandbox')
