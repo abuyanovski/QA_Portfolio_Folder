@@ -8,6 +8,7 @@ Right now, the project includes:
 - API automation for JSONPlaceholder `/posts` endpoints
 - Page Object Model structure for UI tests
 - Shared pytest fixtures and progress logging for clearer test runs
+- Optional HTML and Allure reporting with failure screenshots for UI tests
 - Supporting QA assets in `docs/` and `test_artifacts/`
 
 ## Current Stack
@@ -17,6 +18,8 @@ Right now, the project includes:
 - `requests`
 - `webdriver-manager`
 - `pytest-json-report`
+- `pytest-html`
+- `allure-pytest`
 
 ## Project Structure
 ```text
@@ -31,11 +34,13 @@ qa-automation-framework/
 │   └── conftest.py
 ├── docs/
 │   └── manual_test_cases.xlsx
+├── allure-results/
 ├── pages/
 │   ├── base_page.py
 │   ├── cart_page.py
 │   ├── inventory_page.py
 │   └── login_page.py
+├── reports/
 ├── test_artifacts/
 │   ├── api_posts_test_cases.md
 │   ├── ci_cd_tool_recommendation.md
@@ -78,11 +83,12 @@ qa-automation-framework/
 The framework reads settings from environment variables in `config/config.py`.
 
 Currently used settings:
+- `BASE_URL`: UI base URL placeholder. Default: `http://www.example.com`
 - `API_BASE_URL`: API base URL. Default: `http://jsonplaceholder.typicode.com`
 - `BROWSER`: Browser for UI tests. Default: `chrome`
 - `HEADLESS`: Run browser headless. Default: `False`
-- `IMPLICIT_WAIT`: Selenium implicit wait in seconds. Default: `10`
-- `EXPLICIT_WAIT`: Configured explicit wait value in seconds. Default: `20`
+- `IMPLICIT_WAIT`: Selenium implicit wait in seconds. Default: `15`
+- `EXPLICIT_WAIT`: Configured explicit wait value in seconds. Default: `30`
 - `SCREENSHOT_PATH`: Screenshot output directory. Default: `screenshots`
 - `LOG_LEVEL`: Logging level placeholder for future expansion. Default: `INFO`
 
@@ -135,16 +141,43 @@ The current pytest setup prints progress information during execution, including
 - per-test start and end status
 - numbered step messages inside tests
 
+### Generate an HTML Report
+```bash
+pytest tests/ui --html=reports/ui-report.html --self-contained-html
+```
+
+Notes:
+- UI test failures automatically save screenshots into `reports/screenshots/` when an HTML report is enabled.
+- The HTML report includes environment metadata such as browser, headless mode, and configured base URLs.
+
+### Generate Allure Results
+```bash
+pytest tests/ui --alluredir=allure-results
+```
+
+To render the report locally, use the Allure CLI after installing it on your machine:
+
+```bash
+allure serve allure-results
+```
+
+Or generate a static report:
+
+```bash
+allure generate allure-results --clean -o allure-report
+```
+
+When Allure reporting is enabled, failed UI tests attach screenshots to the Allure result.
+
 ## CI/CD
 The GitHub Actions workflow in `.github/workflows/python-test.yml` currently:
 - runs on pushes and pull requests to `main`
 - installs dependencies
-- executes pytest with JSON reporting enabled
-- uploads `report.json` as a build artifact
+- executes UI tests with both JSON and self-contained HTML reporting enabled
+- uploads the generated `reports/` directory as a build artifact
 
 The workflow sets:
 - `BASE_URL=https://www.saucedemo.com`
-- `API_BASE_URL=https://jsonplaceholder.typicode.com`
 - `HEADLESS=true`
 
 ## Documentation and QA Assets

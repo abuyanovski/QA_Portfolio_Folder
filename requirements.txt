@@ -3,3 +3,5 @@ pytest
 webdriver-manager
 requests
 pytest-json-report
+pytest-html
+allure-pytest

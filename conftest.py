@@ -1,11 +1,25 @@
+import os
 import re
 import time
+from pathlib import Path
 
 import pytest
 
 from api.base_api_client import BaseApiClient
 from config.config import Config
 from utils.driver_factory import DriverFactory
+
+try:
+    import allure
+    from allure_commons.types import AttachmentType
+except ImportError:
+    allure = None
+    AttachmentType = None
+
+try:
+    from pytest_metadata.plugin import metadata_key
+except ImportError:
+    metadata_key = None
 
 
 def _humanize_test_name(name):
@@ -26,6 +40,135 @@ def _build_test_label(item):
         return f"{parts[-2]} - {test_name}"
 
     return test_name
+
+
+def _safe_file_name(value):
+    return re.sub(r"[^\w.-]+", "_", value)
+
+
+def _get_driver_from_item(item):
+    driver = item.funcargs.get("driver")
+    if driver is not None:
+        return driver
+
+    setup_driver = item.funcargs.get("setup")
+    if setup_driver is not None:
+        return setup_driver
+
+    test_instance = getattr(item, "instance", None)
+    return getattr(test_instance, "driver", None)
+
+
+def _get_failure_artifacts_dir(config):
+    html_path = getattr(config.option, "htmlpath", None)
+    if html_path:
+        return Path(html_path).parent / "screenshots"
+
+    return Path(Config.SCREENSHOT_PATH) / "failures"
+
+
+def _capture_failure_screenshot(item, report):
+    driver = _get_driver_from_item(item)
+    if driver is None:
+        return None
+
+    screenshot_dir = _get_failure_artifacts_dir(item.config)
+    screenshot_dir.mkdir(parents=True, exist_ok=True)
+
+    screenshot_path = screenshot_dir / f"{_safe_file_name(item.nodeid)}_{report.when}.png"
+
+    try:
+        saved = driver.save_screenshot(str(screenshot_path))
+    except Exception as exc:
+        report.sections.append(("reporting", f"Could not capture screenshot: {exc}"))
+        return None
+
+    if not saved:
+        report.sections.append(("reporting", "WebDriver did not save a failure screenshot."))
+        return None
+
+    return screenshot_path
+
+
+def _relative_to_html_report(config, target_path):
+    html_path = getattr(config.option, "htmlpath", None)
+    if not html_path:
+        return target_path.as_posix()
+
+    report_dir = Path(html_path).parent
+    return os.path.relpath(target_path, report_dir).replace("\\", "/")
+
+
+def _add_pytest_html_extras(item, report, screenshot_path):
+    pytest_html = item.config.pluginmanager.getplugin("html")
+    if pytest_html is None or screenshot_path is None:
+        return
+
+    extras = getattr(report, "extras", [])
+    extras.append(
+        pytest_html.extras.url(
+            _relative_to_html_report(item.config, screenshot_path),
+            name="Failure screenshot",
+        )
+    )
+    report.extras = extras
+
+
+def _add_allure_attachment(item, screenshot_path):
+    if screenshot_path is None or allure is None or AttachmentType is None:
+        return
+
+    if not item.config.pluginmanager.hasplugin("allure_pytest"):
+        return
+
+    allure.attach.file(
+        str(screenshot_path),
+        name=f"{item.name} failure screenshot",
+        attachment_type=AttachmentType.PNG,
+    )
+
+
+def _ensure_report_directories(config):
+    for option_name in ("htmlpath", "json_report_file"):
+        option_value = getattr(config.option, option_name, None)
+        if option_value:
+            Path(option_value).parent.mkdir(parents=True, exist_ok=True)
+
+    for option_name in ("allure_report_dir", "alluredir"):
+        option_value = getattr(config.option, option_name, None)
+        if option_value:
+            Path(option_value).mkdir(parents=True, exist_ok=True)
+
+
+def _set_report_metadata(config):
+    metadata = None
+
+    if metadata_key is not None and hasattr(config, "stash"):
+        try:
+            metadata = config.stash[metadata_key]
+        except KeyError:
+            metadata = {}
+            config.stash[metadata_key] = metadata
+    elif hasattr(config, "_metadata"):
+        metadata = config._metadata
+
+    if metadata is None:
+        return
+
+    metadata["Browser"] = Config.BROWSER
+    metadata["Headless"] = str(Config.HEADLESS)
+    metadata["UI Base URL"] = os.getenv("BASE_URL", Config.BASE_URL)
+    metadata["API Base URL"] = Config.API_BASE_URL
+
+
+def pytest_configure(config):
+    _ensure_report_directories(config)
+    _set_report_metadata(config)
+
+
+@pytest.hookimpl(optionalhook=True)
+def pytest_html_report_title(report):
+    report.title = "QA Automation Framework Test Report"
 
 
 def pytest_sessionstart(session):
@@ -53,6 +196,11 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     report = outcome.get_result()
     setattr(item, f"rep_{report.when}", report)
+
+    if report.when == "call" and report.failed:
+        screenshot_path = _capture_failure_screenshot(item, report)
+        _add_pytest_html_extras(item, report, screenshot_path)
+        _add_allure_attachment(item, screenshot_path)
 
 
 @pytest.fixture(scope="function")

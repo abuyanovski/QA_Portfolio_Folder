@@ -31,20 +31,12 @@ jobs:
         BROWSER: chrome
         HEADLESS: "true"
       run: |
-        pytest tests/ui --json-report --json-report-file=report-ui.json
+        mkdir -p reports
+        pytest tests/ui --html=reports/ui-report.html --self-contained-html --json-report --json-report-file=reports/report-ui.json
 
-    - name: Upload Pytest UI JSON Report
+    - name: Upload Pytest UI Reports
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: pytest-ui-json-report
-        path: report-ui.json
-
-    # Example of uploading an HTML report if pytest-html is used
-    # - name: Generate HTML Report
-    #   run: pytest --html=report.html --self-contained-html
-    # - name: Upload Pytest HTML Report
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: pytest-html-report
-    #     path: report.html
+        name: pytest-ui-reports
+        path: reports/

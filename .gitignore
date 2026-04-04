@@ -7,6 +7,12 @@ __pycache__/
 screenshots/
 .env
 report.json
+report-ui.json
+reports/*
+!reports/.gitkeep
+allure-results/*
+!allure-results/.gitkeep
+allure-report/
 htmlcov/
 docs/Saved/Detailed Documentation_ QA Automation Framework.md
 docs/Saved/QA Automation Project with Python, Selenium, and API Testing.md
