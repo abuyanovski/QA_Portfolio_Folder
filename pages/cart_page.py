@@ -3,12 +3,18 @@ from pages.base_page import BasePage
 
 
 class CartPage(BasePage):
+    # == PAGE OBJECTS ==
     CART_ITEMS = (By.CSS_SELECTOR, ".cart_item")
     CART_ITEM_NAME = (By.CSS_SELECTOR, ".inventory_item_name")
     CART_ITEM_DESC = (By.CSS_SELECTOR, ".inventory_item_desc")
     CART_ITEM_PRICE = (By.CSS_SELECTOR, ".inventory_item_price")
     CART_PAGE_TITLE = (By.CSS_SELECTOR, ".title")
 
+    REMOVE_BUTTON = (By.CSS_SELECTOR, ".cart_button")
+    CART_BADGE = (By.CSS_SELECTOR, ".shopping_cart_badge")
+    CART_ITEM_NAMES = (By.CSS_SELECTOR, ".inventory_item_name")
+
+    # == PAGE ACTIONS ==
     def is_loaded(self):
         title = self.get_text(self.CART_PAGE_TITLE)
         return title == "Your Cart"
@@ -26,3 +32,15 @@ class CartPage(BasePage):
             "description": first_item.find_element(*self.CART_ITEM_DESC).text,
             "price": first_item.find_element(*self.CART_ITEM_PRICE).text,
         }
+
+    def remove_first_cart_item(self):
+        items = self.find_elements(self.CART_ITEMS)
+        first_item = items[0]
+        first_item.find_element(*self.REMOVE_BUTTON).click()
+
+    def is_cart_badge_displayed(self):
+        return self.is_element_present(self.CART_BADGE)
+
+    def get_cart_item_names(self):
+        name_elements = self.find_elements(self.CART_ITEM_NAMES)
+        return [element.text for element in name_elements]

@@ -47,3 +47,40 @@ class TestCart:
 
         assert actual_item["price"] == expected_item["price"], \
             "Cart item price does not match selected inventory item."
+
+    def test_remove_item_from_cart_and_verify_state_is_synchronized_TC_CART_002 (self, driver):
+        login_page = LoginPage (driver)
+        inventory_page = InventoryPage (driver)
+        cart_page = CartPage (driver)
+
+        login_page.open ()
+        login_page.login ("standard_user", "secret_sauce")
+
+        assert inventory_page.is_loaded (), \
+            "Inventory page did not load after login."
+
+        expected_item = inventory_page.get_first_inventory_item_data ()
+
+        inventory_page.add_first_item_to_cart ()
+
+        assert inventory_page.get_cart_badge_count () == "1", \
+            "Cart badge did not update to 1 after adding an item."
+
+        inventory_page.open_cart ()
+
+        assert cart_page.is_loaded (), \
+            "Cart page did not load."
+
+        assert cart_page.get_cart_items_count () == 1, \
+            "Cart should contain exactly one item before removal."
+
+        cart_page.remove_first_cart_item ()
+
+        assert cart_page.get_cart_items_count () == 0, \
+            "Cart item was not removed successfully."
+
+        assert not cart_page.is_cart_badge_displayed (), \
+            "Cart badge should disappear after removing the only item."
+
+        assert expected_item ["name"] not in cart_page.get_cart_item_names (), \
+            "Removed item is still displayed in the cart."
