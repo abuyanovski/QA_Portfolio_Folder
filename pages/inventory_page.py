@@ -27,6 +27,9 @@ class InventoryPage(BasePage):
     CART_BADGE = (By.CSS_SELECTOR, ".shopping_cart_badge")
     CART_LINK = (By.CSS_SELECTOR, ".shopping_cart_link")
     BACK_TO_PRODUCTS_BUTTON = (By.ID, "back-to-products")
+    MENU_BUTTON = (By.ID, "react-burger-menu-btn")
+    RESET_APP_STATE_LINK = (By.ID, "reset_sidebar_link")
+    CLOSE_MENU_BUTTON = (By.ID, "react-burger-cross-btn")
 
     # == PAGE ACTIONS ==
     def get_inventory_items_count(self):
@@ -103,5 +106,17 @@ class InventoryPage(BasePage):
     def get_cart_badge_count(self):
         return self.get_text(self.CART_BADGE)
 
+    def is_cart_badge_displayed(self):
+        return self.is_element_present(self.CART_BADGE)
+
     def open_cart(self):
         self.click(self.CART_LINK)
+
+    def reset_app_state(self):
+        self.click(self.MENU_BUTTON)
+        self.click(self.RESET_APP_STATE_LINK)
+        self.wait.until(
+            lambda driver: len(driver.find_elements(*self.CART_BADGE)) == 0
+        )
+        self.click(self.CLOSE_MENU_BUTTON)
+        self.wait_for_invisibility(self.CLOSE_MENU_BUTTON)
