@@ -13,6 +13,7 @@ class CartPage(BasePage):
     REMOVE_BUTTON = (By.CSS_SELECTOR, ".cart_button")
     CART_BADGE = (By.CSS_SELECTOR, ".shopping_cart_badge")
     CART_ITEM_NAMES = (By.CSS_SELECTOR, ".inventory_item_name")
+    CHECKOUT_BUTTON = (By.ID, "checkout")
 
     # == PAGE ACTIONS ==
     def is_loaded(self):
@@ -44,3 +45,6 @@ class CartPage(BasePage):
     def get_cart_item_names(self):
         name_elements = self.find_elements(self.CART_ITEM_NAMES)
         return [element.text for element in name_elements]
+
+    def click_checkout (self):
+        self.click (self.CHECKOUT_BUTTON)

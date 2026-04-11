@@ -4,7 +4,7 @@
 ![Pytest](https://img.shields.io/badge/Pytest-9.x-0A9EDC?logo=pytest&logoColor=white)
 ![Selenium](https://img.shields.io/badge/Selenium-WebDriver-43B02A?logo=selenium&logoColor=white)
 ![API](https://img.shields.io/badge/API-requests-2D6CDF)
-![Status](https://img.shields.io/badge/Current%20Checkpoint-11%20Passing%20Tests-2EA44F)
+![Status](https://img.shields.io/badge/Current%20Checkpoint-13%20Passed%20%7C%201%20XFail-2EA44F)
 
 Portfolio-ready QA automation framework covering browser UI tests, REST API tests, manual test design, reporting, and CI-friendly execution.
 
@@ -12,8 +12,8 @@ Portfolio-ready QA automation framework covering browser UI tests, REST API test
 
 | Area | Current State |
 |---|---|
-| Automated tests | 11 total: 7 UI + 4 API |
-| UI target | SauceDemo login, inventory, and cart workflows |
+| Automated tests | 14 total: 10 UI + 4 API |
+| UI target | SauceDemo login, inventory, cart, and checkout workflows |
 | API target | JSONPlaceholder `/posts` endpoints |
 | Test design assets | Manual UI + API workbook with 18 documented cases |
 | Framework style | Pytest fixtures, Selenium Page Object Model, reusable API client |
@@ -27,7 +27,9 @@ Portfolio-ready QA automation framework covering browser UI tests, REST API test
 | Manual UI and API workbook | [docs/saucedemo_manual_test_cases_with_api.xlsx](docs/saucedemo_manual_test_cases_with_api.xlsx) |
 | API testing scope | [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md) |
 | Login UI test notes | [test_artifacts/ui_login_test_cases.md](test_artifacts/ui_login_test_cases.md) |
+| Checkout UI test notes | [test_artifacts/ui_checkout_test_cases.md](test_artifacts/ui_checkout_test_cases.md) |
 | API test implementation | [tests/api/test_posts_api.py](tests/api/test_posts_api.py) |
+| Checkout test implementation | [tests/ui/test_checkout.py](tests/ui/test_checkout.py) |
 | API client | [api/base_api_client.py](api/base_api_client.py) |
 | UI tests | [tests/ui/](tests/ui/) |
 | Page objects | [pages/](pages/) |
@@ -50,6 +52,7 @@ Portfolio-ready QA automation framework covering browser UI tests, REST API test
 | Login UI | Standard and locked-out user paths | Redirect validation, inventory load checks, error message checks |
 | Inventory UI | Product sorting and product details | Price ordering, item count stability, detail page data consistency |
 | Cart UI | Add, remove, and reset state | Badge count, cart contents, removal sync, reset app state behavior |
+| Checkout UI | Successful checkout, validation, and `error_user` behavior | Overview item consistency, required-field validation, completion state observation |
 | API `/posts` | Representative CRUD-style flow | `GET /posts`, `GET /posts/1`, `POST /posts`, `DELETE /posts/1` |
 
 See [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md) for the current automated API testing scope.
@@ -65,7 +68,7 @@ HEADLESS=True pytest -m "ui or api"
 Latest verified result in this workspace:
 
 ```text
-11 passed
+13 passed, 1 xfailed
 ```
 
 ## 📘 Manual Test Case Assets
@@ -80,7 +83,7 @@ It replaces the previous `docs/manual_test_cases.xlsx` workbook and includes:
 | API scenarios | 8 | `TC_API_001` through `TC_API_008` |
 | Summary tracker | 1 sheet | Execution status, priority, and automation readiness |
 
-The manual workbook is intentionally broader than the automated suite. Checkout scenarios are documented as manual coverage, while checkout automation remains a future expansion area.
+The UI automation now maps to the current login, inventory, cart, and checkout case IDs in the workbook. `TC_CHECKOUT_003` is intentionally tracked as `xfail` because SauceDemo's `error_user` exposes abnormal checkout behavior that is useful to document rather than hide.
 
 ## 📁 Project Structure
 ```text
@@ -99,6 +102,7 @@ qa-automation-framework/
 ├── pages/
 │   ├── base_page.py
 │   ├── cart_page.py
+│   ├── checkout_page.py
 │   ├── inventory_page.py
 │   └── login_page.py
 ├── reports/
@@ -106,6 +110,7 @@ qa-automation-framework/
 │   ├── api_posts_test_cases.md
 │   ├── ci_cd_tool_recommendation.md
 │   ├── saucedemo_manual_test_cases_regenerated.md
+│   ├── ui_checkout_test_cases.md
 │   ├── ui_login_test_cases.md
 │   └── matrices/
 ├── tests/
@@ -113,6 +118,7 @@ qa-automation-framework/
 │   │   └── test_posts_api.py
 │   └── ui/
 │       ├── test_cart.py
+│       ├── test_checkout.py
 │       ├── test_inventory.py
 │       └── test_login.py
 ├── utils/
@@ -162,7 +168,7 @@ Notes:
 ## 🚀 Running Tests
 
 ### Default Run
-By default, `pytest` runs the UI suite because `pytest.ini` excludes tests marked `api`. This currently runs 7 UI tests.
+By default, `pytest` runs the UI suite because `pytest.ini` excludes tests marked `api`. This currently runs 10 UI tests, including one expected `xfail` for `error_user` checkout behavior.
 
 ```bash
 pytest
@@ -194,12 +200,14 @@ $env:HEADLESS="True"; pytest -m "ui or api"
 pytest tests/ui/test_login.py
 pytest tests/ui/test_inventory.py
 pytest tests/ui/test_cart.py
+pytest tests/ui/test_checkout.py
 pytest tests/api/test_posts_api.py -m api
 ```
 
 ### Run Specific Test Cases
 ```bash
 pytest tests/ui/test_login.py::TestLogin::test_successful_login_TC_LOGIN_001
+pytest tests/ui/test_checkout.py::TestCheckout::test_successful_checkout_with_valid_customer_information_TC_CHECKOUT_001
 pytest tests/api/test_posts_api.py::TestPostsApi::test_get_single_post -m api
 ```
 
@@ -257,6 +265,7 @@ Additional supporting material is already included in the repo:
 Useful files:
 - [docs/saucedemo_manual_test_cases_with_api.xlsx](docs/saucedemo_manual_test_cases_with_api.xlsx)
 - [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md)
+- [test_artifacts/ui_checkout_test_cases.md](test_artifacts/ui_checkout_test_cases.md)
 - [test_artifacts/ui_login_test_cases.md](test_artifacts/ui_login_test_cases.md)
 - [test_artifacts/saucedemo_manual_test_cases_regenerated.md](test_artifacts/saucedemo_manual_test_cases_regenerated.md)
 - [test_artifacts/matrices/feature_coverage_matrix.xlsx](test_artifacts/matrices/feature_coverage_matrix.xlsx)
