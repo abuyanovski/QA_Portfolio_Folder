@@ -1,7 +1,7 @@
 # QA Automation Framework
 
 ## Overview
-This repository is a work in progress QA automation framework built with Python, Pytest, Selenium, and `requests`. It currently covers a small but practical slice of automated UI and API testing, and it will continue to grow to cover more aspects of QA over time.
+This repository is a work in progress QA automation framework built with Python, Pytest, Selenium, and `requests`. It currently covers a small but practical slice of automated UI and API testing, with 11 automated tests in place: 7 UI tests and 4 API tests.
 
 Right now, the project includes:
 - UI automation for Sauce Demo login, inventory, and cart flows
@@ -20,6 +20,38 @@ Right now, the project includes:
 - `pytest-json-report`
 - `pytest-html`
 - `allure-pytest`
+
+## Current Automated Coverage
+
+The current automated test suite includes:
+
+- Login UI coverage:
+  - successful login with a standard user
+  - locked-out user access denial and error validation
+- Inventory UI coverage:
+  - sorting products by price from low to high
+  - validating product details page data against inventory list data
+- Cart UI coverage:
+  - adding one item to cart and validating badge and cart contents
+  - removing one item and validating synchronized cart state
+  - resetting app state from the side menu and confirming cart state is cleared
+- API coverage for JSONPlaceholder `/posts`:
+  - get all posts
+  - get one post
+  - create a post
+  - delete a post
+
+Current local verification status:
+
+```bash
+HEADLESS=True pytest -m "ui or api"
+```
+
+Latest verified result in this workspace:
+
+```text
+11 passed
+```
 
 ## Project Structure
 ```text
@@ -87,10 +119,12 @@ Currently used settings:
 - `API_BASE_URL`: API base URL. Default: `http://jsonplaceholder.typicode.com`
 - `BROWSER`: Browser for UI tests. Default: `chrome`
 - `HEADLESS`: Run browser headless. Default: `False`
-- `IMPLICIT_WAIT`: Selenium implicit wait in seconds. Default: `15`
-- `EXPLICIT_WAIT`: Configured explicit wait value in seconds. Default: `30`
+- `IMPLICIT_WAIT`: Selenium implicit wait in seconds. Default: `6`
+- `EXPLICIT_WAIT`: Configured explicit wait value in seconds. Default: `10`
 - `SCREENSHOT_PATH`: Screenshot output directory. Default: `screenshots`
 - `LOG_LEVEL`: Logging level placeholder for future expansion. Default: `INFO`
+- `CHROMEDRIVER_PATH`: Optional explicit ChromeDriver executable path
+- `GECKODRIVER_PATH`: Optional explicit GeckoDriver executable path
 
 Notes:
 - `BASE_URL` exists in config, but the current Sauce Demo page objects still use direct page URLs.
@@ -99,7 +133,7 @@ Notes:
 ## Running Tests
 
 ### Default Run
-By default, `pytest` runs the UI suite because `pytest.ini` excludes tests marked `api`.
+By default, `pytest` runs the UI suite because `pytest.ini` excludes tests marked `api`. This currently runs 7 UI tests.
 
 ```bash
 pytest
@@ -118,6 +152,12 @@ pytest -m api
 ### Run UI and API Tests Together
 ```bash
 pytest -m "ui or api"
+```
+
+On PowerShell, to force headless execution for a local full-suite run:
+
+```powershell
+$env:HEADLESS="True"; pytest -m "ui or api"
 ```
 
 ### Run Specific Files
@@ -188,8 +228,13 @@ Additional supporting material is already included in the repo:
 Useful files:
 - `test_artifacts/api_posts_test_cases.md`
 - `test_artifacts/ui_login_test_cases.md`
+- `test_artifacts/saucedemo_manual_test_cases_regenerated.md`
+- `test_artifacts/matrices/feature_coverage_matrix.xlsx`
+
+Generated runtime output may appear in `reports/`, `allure-results/`, and `screenshots/`; those outputs are ignored by Git except for placeholder files.
 
 ## Notes
-- The framework is intentionally small at this stage and is being built out incrementally.
+- The framework is intentionally small at this stage, but the current UI and API test checkpoint is passing locally.
 - Some config values and support files are in place for future expansion even if they are not fully wired into every test yet.
 - The current automated coverage is focused on a few representative UI and API flows rather than full application coverage.
+- Generated report, screenshot, cache, virtual environment, and IDE files are ignored by Git.
