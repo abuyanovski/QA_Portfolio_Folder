@@ -1,47 +1,62 @@
 # QA Automation Framework
 
-## Overview
-This repository is a work in progress QA automation framework built with Python, Pytest, Selenium, and `requests`. It currently covers a small but practical slice of automated UI and API testing, with 11 automated tests in place: 7 UI tests and 4 API tests.
+![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
+![Pytest](https://img.shields.io/badge/Pytest-9.x-0A9EDC?logo=pytest&logoColor=white)
+![Selenium](https://img.shields.io/badge/Selenium-WebDriver-43B02A?logo=selenium&logoColor=white)
+![API](https://img.shields.io/badge/API-requests-2D6CDF)
+![Status](https://img.shields.io/badge/Current%20Checkpoint-11%20Passing%20Tests-2EA44F)
 
-Right now, the project includes:
-- UI automation for Sauce Demo login, inventory, and cart flows
-- API automation for JSONPlaceholder `/posts` endpoints
-- Page Object Model structure for UI tests
-- Shared pytest fixtures and progress logging for clearer test runs
-- Optional HTML and Allure reporting with failure screenshots for UI tests
-- Supporting QA assets in `docs/` and `test_artifacts/`
+Portfolio-ready QA automation framework covering browser UI tests, REST API tests, manual test design, reporting, and CI-friendly execution.
 
-## Current Stack
-- Python
-- Pytest
-- Selenium WebDriver
-- `requests`
-- `webdriver-manager`
-- `pytest-json-report`
-- `pytest-html`
-- `allure-pytest`
+## 📌 Portfolio Snapshot
 
-## Current Automated Coverage
+| Area | Current State |
+|---|---|
+| Automated tests | 11 total: 7 UI + 4 API |
+| UI target | SauceDemo login, inventory, and cart workflows |
+| API target | JSONPlaceholder `/posts` endpoints |
+| Test design assets | Manual UI + API workbook with 18 documented cases |
+| Framework style | Pytest fixtures, Selenium Page Object Model, reusable API client |
+| Reporting | Console progress logs, HTML reports, Allure results, failure screenshots |
+| CI | GitHub Actions workflow for headless UI execution |
 
-The current automated test suite includes:
+## 🔗 Quick Links
 
-- Login UI coverage:
-  - successful login with a standard user
-  - locked-out user access denial and error validation
-- Inventory UI coverage:
-  - sorting products by price from low to high
-  - validating product details page data against inventory list data
-- Cart UI coverage:
-  - adding one item to cart and validating badge and cart contents
-  - removing one item and validating synchronized cart state
-  - resetting app state from the side menu and confirming cart state is cleared
-- API coverage for JSONPlaceholder `/posts`:
-  - get all posts
-  - get one post
-  - create a post
-  - delete a post
+| Asset | Link |
+|---|---|
+| Manual UI and API workbook | [docs/saucedemo_manual_test_cases_with_api.xlsx](docs/saucedemo_manual_test_cases_with_api.xlsx) |
+| API testing scope | [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md) |
+| Login UI test notes | [test_artifacts/ui_login_test_cases.md](test_artifacts/ui_login_test_cases.md) |
+| API test implementation | [tests/api/test_posts_api.py](tests/api/test_posts_api.py) |
+| API client | [api/base_api_client.py](api/base_api_client.py) |
+| UI tests | [tests/ui/](tests/ui/) |
+| Page objects | [pages/](pages/) |
+| CI workflow | [.github/workflows/python-test.yml](.github/workflows/python-test.yml) |
 
-Current local verification status:
+## 🧰 Current Stack
+
+| Layer | Tools |
+|---|---|
+| Test runner | Pytest |
+| UI automation | Selenium WebDriver, webdriver-manager |
+| API automation | requests |
+| Reporting | pytest-html, pytest-json-report, allure-pytest |
+| Structure | Page Object Model, shared fixtures, reusable client classes |
+
+## 🧪 Automated Coverage
+
+| Suite | Coverage | Automated Checks |
+|---|---|---|
+| Login UI | Standard and locked-out user paths | Redirect validation, inventory load checks, error message checks |
+| Inventory UI | Product sorting and product details | Price ordering, item count stability, detail page data consistency |
+| Cart UI | Add, remove, and reset state | Badge count, cart contents, removal sync, reset app state behavior |
+| API `/posts` | Representative CRUD-style flow | `GET /posts`, `GET /posts/1`, `POST /posts`, `DELETE /posts/1` |
+
+See [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md) for the current automated API testing scope.
+
+## ✅ Verification Checkpoint
+
+Latest local full-suite command:
 
 ```bash
 HEADLESS=True pytest -m "ui or api"
@@ -53,7 +68,21 @@ Latest verified result in this workspace:
 11 passed
 ```
 
-## Project Structure
+## 📘 Manual Test Case Assets
+
+The current workbook is [docs/saucedemo_manual_test_cases_with_api.xlsx](docs/saucedemo_manual_test_cases_with_api.xlsx).
+
+It replaces the previous `docs/manual_test_cases.xlsx` workbook and includes:
+
+| Manual Suite | Count | Case IDs |
+|---|---:|---|
+| SauceDemo UI | 10 | `TC_LOGIN_001`, `TC_LOGIN_002`, `TC_INV_001`, `TC_INV_002`, `TC_CART_001`, `TC_CART_002`, `TC_CART_003`, `TC_CHECKOUT_001`, `TC_CHECKOUT_002`, `TC_CHECKOUT_003` |
+| API scenarios | 8 | `TC_API_001` through `TC_API_008` |
+| Summary tracker | 1 sheet | Execution status, priority, and automation readiness |
+
+The manual workbook is intentionally broader than the automated suite. Checkout scenarios are documented as manual coverage, while checkout automation remains a future expansion area.
+
+## 📁 Project Structure
 ```text
 qa-automation-framework/
 ├── .github/
@@ -65,7 +94,7 @@ qa-automation-framework/
 │   ├── config.py
 │   └── conftest.py
 ├── docs/
-│   └── manual_test_cases.xlsx
+│   └── saucedemo_manual_test_cases_with_api.xlsx
 ├── allure-results/
 ├── pages/
 │   ├── base_page.py
@@ -94,7 +123,7 @@ qa-automation-framework/
 └── README.md
 ```
 
-## Setup
+## ⚙️ Setup
 
 ### Prerequisites
 - Python 3.9+
@@ -111,8 +140,8 @@ qa-automation-framework/
    pip install -r requirements.txt
    ```
 
-## Configuration
-The framework reads settings from environment variables in `config/config.py`.
+## 🛠️ Configuration
+The framework reads settings from environment variables in [config/config.py](config/config.py).
 
 Currently used settings:
 - `BASE_URL`: UI base URL placeholder. Default: `http://www.example.com`
@@ -130,7 +159,7 @@ Notes:
 - `BASE_URL` exists in config, but the current Sauce Demo page objects still use direct page URLs.
 - The GitHub Actions workflow sets `HEADLESS=true` for CI runs.
 
-## Running Tests
+## 🚀 Running Tests
 
 ### Default Run
 By default, `pytest` runs the UI suite because `pytest.ini` excludes tests marked `api`. This currently runs 7 UI tests.
@@ -209,8 +238,8 @@ allure generate allure-results --clean -o allure-report
 
 When Allure reporting is enabled, failed UI tests attach screenshots to the Allure result.
 
-## CI/CD
-The GitHub Actions workflow in `.github/workflows/python-test.yml` currently:
+## 🔄 CI/CD
+The GitHub Actions workflow in [.github/workflows/python-test.yml](.github/workflows/python-test.yml) currently:
 - runs on pushes and pull requests to `main`
 - installs dependencies
 - executes UI tests with both JSON and self-contained HTML reporting enabled
@@ -220,20 +249,21 @@ The workflow sets:
 - `BASE_URL=https://www.saucedemo.com`
 - `HEADLESS=true`
 
-## Documentation and QA Assets
+## 📚 Documentation and QA Assets
 Additional supporting material is already included in the repo:
-- `docs/` for higher-level project documentation and manual test materials
-- `test_artifacts/` for generated/manual QA assets and coverage-related files
+- [docs/](docs/) for higher-level project documentation and manual test materials
+- [test_artifacts/](test_artifacts/) for generated/manual QA assets and coverage-related files
 
 Useful files:
-- `test_artifacts/api_posts_test_cases.md`
-- `test_artifacts/ui_login_test_cases.md`
-- `test_artifacts/saucedemo_manual_test_cases_regenerated.md`
-- `test_artifacts/matrices/feature_coverage_matrix.xlsx`
+- [docs/saucedemo_manual_test_cases_with_api.xlsx](docs/saucedemo_manual_test_cases_with_api.xlsx)
+- [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md)
+- [test_artifacts/ui_login_test_cases.md](test_artifacts/ui_login_test_cases.md)
+- [test_artifacts/saucedemo_manual_test_cases_regenerated.md](test_artifacts/saucedemo_manual_test_cases_regenerated.md)
+- [test_artifacts/matrices/feature_coverage_matrix.xlsx](test_artifacts/matrices/feature_coverage_matrix.xlsx)
 
 Generated runtime output may appear in `reports/`, `allure-results/`, and `screenshots/`; those outputs are ignored by Git except for placeholder files.
 
-## Notes
+## 📝 Notes
 - The framework is intentionally small at this stage, but the current UI and API test checkpoint is passing locally.
 - Some config values and support files are in place for future expansion even if they are not fully wired into every test yet.
 - The current automated coverage is focused on a few representative UI and API flows rather than full application coverage.
