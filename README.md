@@ -3,7 +3,11 @@
 ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
 ![Pytest](https://img.shields.io/badge/Pytest-9.x-0A9EDC?logo=pytest&logoColor=white)
 ![Selenium](https://img.shields.io/badge/Selenium-WebDriver-43B02A?logo=selenium&logoColor=white)
-![API](https://img.shields.io/badge/API-requests-2D6CDF)
+![Google Chrome](https://img.shields.io/badge/Chrome-UI%20Automation-4285F4?logo=googlechrome&logoColor=white)
+![Requests](https://img.shields.io/badge/Requests-API%20Testing-20232A?logo=python&logoColor=white)
+![JSON](https://img.shields.io/badge/JSON-Response%20Validation-000000?logo=json&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI-2088FF?logo=githubactions&logoColor=white)
+![Allure Report](https://img.shields.io/badge/Allure-Reporting-FF6A00?logo=allure&logoColor=white)
 ![Status](https://img.shields.io/badge/Current%20Checkpoint-13%20Passed%20%7C%201%20XFail-2EA44F)
 
 Portfolio-ready QA automation framework covering browser UI tests, REST API tests, manual test design, reporting, and CI-friendly execution.
