@@ -7,6 +7,7 @@
 ![Status](https://img.shields.io/badge/Current%20Checkpoint-13%20Passed%20%7C%201%20XFail-2EA44F)
 
 Portfolio-ready QA automation framework covering browser UI tests, REST API tests, manual test design, reporting, and CI-friendly execution.
+THIS IS WIP and new features are being added. 
 
 ## 📌 Portfolio Snapshot
 
