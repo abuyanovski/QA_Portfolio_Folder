@@ -22,6 +22,24 @@ except ImportError:
     metadata_key = None
 
 
+SUPPORTED_BROWSERS = ("chrome", "firefox")
+
+
+def _default_browser():
+    browser = Config.BROWSER.lower()
+    return browser if browser in SUPPORTED_BROWSERS else "chrome"
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--browser",
+        action="store",
+        default=_default_browser(),
+        choices=SUPPORTED_BROWSERS,
+        help="Browser to use for UI tests. Overrides BROWSER. Supported values: chrome, firefox.",
+    )
+
+
 def _humanize_test_name(name):
     match = re.match(r"test_(?P<title>.+?)_(?P<case_id>TC_[A-Z]+_\d+)$", name)
     if match:
@@ -155,7 +173,7 @@ def _set_report_metadata(config):
     if metadata is None:
         return
 
-    metadata["Browser"] = Config.BROWSER
+    metadata["Browser"] = config.getoption("browser")
     metadata["Headless"] = str(Config.HEADLESS)
     metadata["UI Base URL"] = os.getenv("BASE_URL", Config.BASE_URL)
     metadata["API Base URL"] = Config.API_BASE_URL
@@ -253,12 +271,15 @@ def test_progress(request):
 
 
 @pytest.fixture(scope="function")
-def driver(progress_step):
-    progress_step(f"Launch the {Config.BROWSER} browser.")
-    browser = DriverFactory.get_driver(Config.BROWSER)
-    yield browser
-    print("\n    Cleanup: Close the browser.", flush=True)
-    browser.quit()
+def driver(request, progress_step):
+    selected_browser = request.config.getoption("browser")
+    progress_step(f"Launch the {selected_browser} browser.")
+    browser = DriverFactory.get_driver(selected_browser)
+    try:
+        yield browser
+    finally:
+        print("\n    Cleanup: Close the browser.", flush=True)
+        browser.quit()
 
 
 @pytest.fixture(scope="function")

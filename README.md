@@ -211,6 +211,7 @@ The framework reads settings from environment variables in [config/config.py](co
 Notes:
 
 - `BASE_URL` exists in config, but the current SauceDemo page objects still use direct page URLs.
+- UI tests select the browser with the pytest `--browser` option or the `BROWSER` environment variable. Supported values are `chrome` and `firefox`; default is `chrome`. The command-line option takes precedence.
 - The GitHub Actions workflow sets `HEADLESS=true` for CI runs.
 
 ---
@@ -221,6 +222,8 @@ Notes:
 |---|---|
 | Default UI run | `pytest` |
 | All UI tests | `pytest tests/ui` |
+| UI tests in Chrome | `pytest tests/ui --browser chrome` |
+| UI tests in Firefox | `pytest tests/ui --browser firefox` |
 | API tests only | `pytest -m api` |
 | UI + API together | `pytest -m "ui or api"` |
 | Login tests | `pytest tests/ui/test_login.py` |

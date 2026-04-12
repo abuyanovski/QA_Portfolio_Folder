@@ -14,7 +14,7 @@ from config.config import Config
 class DriverFactory:
     @staticmethod
     def _version_key(version):
-        return tuple(int(part) for part in version.split("."))
+        return tuple(int(part) for part in version.lstrip("v").split("."))
 
     @staticmethod
     def _latest_cached_driver_path(driver_name, executable_name):
@@ -24,7 +24,7 @@ class DriverFactory:
 
         candidates = sorted(
             cache_root.glob(f"*/**/{executable_name}"),
-            key=lambda candidate: DriverFactory._version_key(candidate.parents[1].name),
+            key=lambda candidate: DriverFactory._version_key(candidate.relative_to(cache_root).parts[0]),
             reverse=True,
         )
         return str(candidates[0]) if candidates else None
@@ -35,13 +35,13 @@ class DriverFactory:
         if configured_path and Path(configured_path).is_file():
             return ChromeService(configured_path)
 
-        path_driver = shutil.which("chromedriver")
-        if path_driver:
-            return ChromeService(path_driver)
-
         cached_driver = DriverFactory._latest_cached_driver_path("chromedriver", "chromedriver.exe")
         if cached_driver:
             return ChromeService(cached_driver)
+
+        path_driver = shutil.which("chromedriver")
+        if path_driver:
+            return ChromeService(path_driver)
 
         return ChromeService(ChromeDriverManager().install())
 
@@ -51,13 +51,13 @@ class DriverFactory:
         if configured_path and Path(configured_path).is_file():
             return FirefoxService(configured_path)
 
-        path_driver = shutil.which("geckodriver")
-        if path_driver:
-            return FirefoxService(path_driver)
-
         cached_driver = DriverFactory._latest_cached_driver_path("geckodriver", "geckodriver.exe")
         if cached_driver:
             return FirefoxService(cached_driver)
+
+        path_driver = shutil.which("geckodriver")
+        if path_driver:
+            return FirefoxService(path_driver)
 
         return FirefoxService(GeckoDriverManager().install())
 
