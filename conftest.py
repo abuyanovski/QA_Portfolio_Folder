@@ -25,29 +25,56 @@ except ImportError:
 SUPPORTED_BROWSERS = ("chrome", "firefox")
 
 
-def _default_browser():
-    browser = Config.BROWSER.lower()
-    return browser if browser in SUPPORTED_BROWSERS else "chrome"
+def _selected_browsers(config):
+    raw_browser_option = config.getoption("browser") or Config.BROWSER
+    selected_browsers = []
+
+    for browser in raw_browser_option.split(","):
+        browser = browser.strip().lower()
+        if browser == "all":
+            selected_browsers.extend(SUPPORTED_BROWSERS)
+            continue
+        if browser not in SUPPORTED_BROWSERS:
+            supported = ", ".join((*SUPPORTED_BROWSERS, "all"))
+            raise pytest.UsageError(
+                f"Unsupported browser '{browser}'. Supported values: {supported}."
+            )
+        selected_browsers.append(browser)
+
+    return list(dict.fromkeys(selected_browsers))
 
 
 def pytest_addoption(parser):
     parser.addoption(
         "--browser",
         action="store",
-        default=_default_browser(),
-        choices=SUPPORTED_BROWSERS,
-        help="Browser to use for UI tests. Overrides BROWSER. Supported values: chrome, firefox.",
+        default=None,
+        help=(
+            "Browser(s) to use for UI tests. Supported values: chrome, firefox, all. "
+            "Use comma-separated values to run multiple browsers. Default: BROWSER or chrome,firefox."
+        ),
     )
 
 
+def pytest_generate_tests(metafunc):
+    if "browser_name" in metafunc.fixturenames:
+        browsers = _selected_browsers(metafunc.config)
+        metafunc.parametrize("browser_name", browsers, ids=browsers)
+
+
 def _humanize_test_name(name):
+    browser_suffix = ""
+    if name.endswith("]") and "[" in name:
+        name, parameter_id = name.rsplit("[", 1)
+        browser_suffix = f" [{parameter_id[:-1]}]"
+
     match = re.match(r"test_(?P<title>.+?)_(?P<case_id>TC_[A-Z]+_\d+)$", name)
     if match:
         title = match.group("title").replace("_", " ")
         case_id = match.group("case_id")
-        return f"{title} [{case_id}]"
+        return f"{title} [{case_id}]{browser_suffix}"
 
-    return name.removeprefix("test_").replace("_", " ")
+    return f"{name.removeprefix('test_').replace('_', ' ')}{browser_suffix}"
 
 
 def _build_test_label(item):
@@ -173,7 +200,7 @@ def _set_report_metadata(config):
     if metadata is None:
         return
 
-    metadata["Browser"] = config.getoption("browser")
+    metadata["Browser"] = ", ".join(_selected_browsers(config))
     metadata["Headless"] = str(Config.HEADLESS)
     metadata["UI Base URL"] = os.getenv("BASE_URL", Config.BASE_URL)
     metadata["API Base URL"] = Config.API_BASE_URL
@@ -271,10 +298,9 @@ def test_progress(request):
 
 
 @pytest.fixture(scope="function")
-def driver(request, progress_step):
-    selected_browser = request.config.getoption("browser")
-    progress_step(f"Launch the {selected_browser} browser.")
-    browser = DriverFactory.get_driver(selected_browser)
+def driver(browser_name, progress_step):
+    progress_step(f"Launch the {browser_name} browser.")
+    browser = DriverFactory.get_driver(browser_name)
     try:
         yield browser
     finally:

@@ -2,7 +2,7 @@ import os
 
 class Config:
     BASE_URL = os.getenv("BASE_URL", "http://www.example.com")
-    BROWSER = os.getenv("BROWSER", "chrome")
+    BROWSER = os.getenv("BROWSER", "chrome,firefox")
     HEADLESS = os.getenv("HEADLESS", "False").lower() == "true"
     IMPLICIT_WAIT = int(os.getenv("IMPLICIT_WAIT", "6"))
     EXPLICIT_WAIT = int(os.getenv("EXPLICIT_WAIT", "10"))

@@ -43,7 +43,7 @@ It is intentionally built as a portfolio project, so the repo shows both the fin
 | Framework structure | Pytest fixtures, Selenium Page Object Model, reusable API client |
 | Reporting | Console progress logs, HTML reports, Allure results, failure screenshots |
 | CI readiness | GitHub Actions workflow for headless browser execution |
-| Quality signal | 14 collected tests: 13 passed, 1 expected xfail |
+| Quality signal | 14 logical tests; UI tests can run across Chrome and Firefox |
 
 ---
 
@@ -94,7 +94,7 @@ See [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases
 
 ## ✅ Current Checkpoint
 
-Latest full-suite command:
+Latest single-browser full-suite checkpoint:
 
 ```bash
 HEADLESS=True pytest -m "ui or api"
@@ -199,7 +199,7 @@ The framework reads settings from environment variables in [config/config.py](co
 |---|---|---|
 | `BASE_URL` | UI base URL placeholder | `http://www.example.com` |
 | `API_BASE_URL` | API base URL | `http://jsonplaceholder.typicode.com` |
-| `BROWSER` | Browser for UI tests | `chrome` |
+| `BROWSER` | Browser selection for UI tests. Supports `chrome`, `firefox`, `all`, or comma-separated values | `chrome,firefox` |
 | `HEADLESS` | Run browser headless | `False` |
 | `IMPLICIT_WAIT` | Selenium implicit wait seconds | `6` |
 | `EXPLICIT_WAIT` | Selenium explicit wait seconds | `10` |
@@ -211,7 +211,7 @@ The framework reads settings from environment variables in [config/config.py](co
 Notes:
 
 - `BASE_URL` exists in config, but the current SauceDemo page objects still use direct page URLs.
-- UI tests select the browser with the pytest `--browser` option or the `BROWSER` environment variable. Supported values are `chrome` and `firefox`; default is `chrome`. The command-line option takes precedence.
+- UI tests select browsers with the pytest `--browser` option or the `BROWSER` environment variable. Supported values are `chrome`, `firefox`, `all`, or comma-separated values such as `chrome,firefox`. The command-line option takes precedence.
 - The GitHub Actions workflow sets `HEADLESS=true` for CI runs.
 
 ---
@@ -220,10 +220,11 @@ Notes:
 
 | Goal | Command |
 |---|---|
-| Default UI run | `pytest` |
-| All UI tests | `pytest tests/ui` |
+| Default UI run across Chrome and Firefox | `pytest` |
+| All UI tests across Chrome and Firefox | `pytest tests/ui` |
 | UI tests in Chrome | `pytest tests/ui --browser chrome` |
 | UI tests in Firefox | `pytest tests/ui --browser firefox` |
+| UI tests in both browsers explicitly | `pytest tests/ui --browser chrome,firefox` |
 | API tests only | `pytest -m api` |
 | UI + API together | `pytest -m "ui or api"` |
 | Login tests | `pytest tests/ui/test_login.py` |
