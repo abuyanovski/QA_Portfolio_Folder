@@ -29,6 +29,8 @@ This framework demonstrates a practical QA automation workflow: manual test desi
 
 It is intentionally built as a portfolio project, so the repo shows both the finished test code and the QA thinking behind it: coverage planning, test data choices, validation strategy, and current suite health.
 
+The API suite is currently being migrated from JSONPlaceholder smoke checks to workflow-aligned REST coverage using DummyJSON for auth, products, and carts, with a local checkout simulator planned for the missing checkout validation case.
+
 > **Status:** Active work in progress. New scenarios and documentation are being added as the framework grows.
 
 ---
@@ -38,7 +40,7 @@ It is intentionally built as a portfolio project, so the repo shows both the fin
 | Area | What This Shows |
 |---|---|
 | UI automation | SauceDemo login, inventory, cart, and checkout workflows |
-| API automation | JSONPlaceholder `/posts` CRUD-style checks |
+| API automation | REST API migration in progress: JSONPlaceholder legacy checks moving to DummyJSON auth, products, carts, plus planned local checkout simulation |
 | Test design | Manual UI + API workbook with 18 documented cases |
 | Framework structure | Pytest fixtures, Selenium Page Object Model, reusable API client |
 | Reporting | Console progress logs, HTML reports, Allure results, failure screenshots |
@@ -52,15 +54,17 @@ It is intentionally built as a portfolio project, so the repo shows both the fin
 | Portfolio Asset | Link |
 |---|---|
 | Manual UI and API workbook | [docs/saucedemo_manual_test_cases_with_api.xlsx](docs/saucedemo_manual_test_cases_with_api.xlsx) |
-| API testing scope | [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md) |
+| API testing scope (current legacy scope) | [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md) |
 | Login UI test notes | [test_artifacts/ui_login_test_cases.md](test_artifacts/ui_login_test_cases.md) |
 | Checkout UI test notes | [test_artifacts/ui_checkout_test_cases.md](test_artifacts/ui_checkout_test_cases.md) |
-| API test implementation | [tests/api/test_posts_api.py](tests/api/test_posts_api.py) |
+| API test implementation (current legacy scope) | [tests/api/test_posts_api.py](tests/api/test_posts_api.py) |
 | Checkout test implementation | [tests/ui/test_checkout.py](tests/ui/test_checkout.py) |
 | API client | [api/base_api_client.py](api/base_api_client.py) |
 | UI tests | [tests/ui/](tests/ui/) |
 | Page objects | [pages/](pages/) |
 | CI workflow | [.github/workflows/python-test.yml](.github/workflows/python-test.yml) |
+
+The API workbook and scope notes are being refreshed to map directly to `TC_API_001` through `TC_API_008` as the new REST cases land.
 
 ---
 
@@ -86,9 +90,18 @@ It is intentionally built as a portfolio project, so the repo shows both the fin
 | Inventory UI | Product sorting and product details | Price ordering, item count stability, detail page data consistency |
 | Cart UI | Add, remove, and reset state | Badge count, cart contents, removal sync, reset app state behavior |
 | Checkout UI | Successful checkout, validation, and `error_user` behavior | Overview item consistency, required-field validation, completion state observation |
-| API `/posts` | Representative CRUD-style flow | `GET /posts`, `GET /posts/1`, `POST /posts`, `DELETE /posts/1` |
+| API automation | Current JSONPlaceholder smoke checks; migration in progress | Next target: auth, inventory, cart, and checkout-aligned REST cases |
 
-See [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md) for the current automated API testing scope.
+See [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md) for the current legacy automated API scope while the workflow-aligned REST suite is being added.
+
+---
+
+## 🗺️ API Migration Roadmap
+
+- `TC_API_001` / `TC_API_002`: auth login success and failure via DummyJSON
+- `TC_API_003` / `TC_API_004` / `TC_API_005`: product list, product detail, and invalid product ID coverage
+- `TC_API_006` / `TC_API_007`: cart add and cart update/remove simulation
+- `TC_API_008`: local checkout simulator for validation behavior
 
 ---
 
@@ -213,6 +226,7 @@ Notes:
 - `BASE_URL` exists in config, but the current SauceDemo page objects still use direct page URLs.
 - UI tests select browsers with the pytest `--browser` option or the `BROWSER` environment variable. Supported values are `chrome`, `firefox`, `all`, or comma-separated values such as `chrome,firefox`. The command-line option takes precedence.
 - The GitHub Actions workflow sets `HEADLESS=true` for CI runs.
+- The shared API client now returns raw responses so negative REST cases can assert expected error payloads such as `400`, `404`, and later `422` directly in pytest.
 
 ---
 

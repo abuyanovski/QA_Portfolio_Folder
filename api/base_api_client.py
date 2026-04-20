@@ -1,6 +1,5 @@
 
 import requests
-import json
 from config.config import Config
 
 class BaseApiClient:
@@ -11,12 +10,7 @@ class BaseApiClient:
     def _send_request(self, method, endpoint, **kwargs):
         url = f"{self.base_url}{endpoint}"
         try:
-            response = self.session.request(method, url, **kwargs)
-            response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
-            return response
-        except requests.exceptions.HTTPError as e:
-            print(f"HTTP Error: {e.response.status_code} - {e.response.text}")
-            raise
+            return self.session.request(method, url, **kwargs)
         except requests.exceptions.ConnectionError as e:
             print(f"Connection Error: {e}")
             raise
