@@ -37,11 +37,11 @@ The current automated API suite covers JSONPlaceholder `/posts` through a reusab
 
 ## 🤖 AI Transparency
 
-This project was created with AI support.
+This project was built with AI assistance.
 
-AI was used as a development assistant during implementation, refactoring, debugging, documentation, and iteration. The project direction, framework structure, test coverage decisions, review process, and final validation were handled by the repository owner.
+AI supported parts of the development process, including implementation, refactoring, debugging, documentation, and iteration. Project direction, framework design, test coverage decisions, review, and final validation were all handled by the repository owner.
 
-All generated suggestions were reviewed, adapted, and validated before being kept. Final responsibility for the code, documentation, and test behavior remains with the repository owner.
+Any AI-generated output was reviewed, adjusted, and validated before being accepted. Final responsibility for the code, documentation, and test behavior remains with the repository owner.
 
 ---
 
