@@ -25,11 +25,11 @@
 
 ## 📌 Project Story
 
-This framework demonstrates a practical QA automation workflow: manual test design, Selenium UI automation, REST API checks, reusable page objects, reusable API client code, reporting hooks, and CI-ready execution.
+This framework demonstrates a practical QA automation workflow: manual test design, Selenium UI automation, REST API checks, reusable page objects, reusable API client code, reporting hooks, lightweight Postman workspace scaffolding, and CI-ready execution.
 
 It is intentionally built as a portfolio project, so the repo shows both the finished test code and the QA thinking behind it: coverage planning, test data choices, validation strategy, and current suite health.
 
-The API suite is currently being migrated from JSONPlaceholder smoke checks to workflow-aligned REST coverage using DummyJSON for auth, products, and carts, with a local checkout simulator planned for the missing checkout validation case.
+The current automated API suite covers JSONPlaceholder `/posts` through a reusable client in `api/base_api_client.py`. Broader future API scenarios are tracked in the manual workbook and Postman scaffolding, but those cases are not implemented in pytest yet.
 
 > **Status:** Active work in progress. New scenarios and documentation are being added as the framework grows.
 
@@ -40,12 +40,12 @@ The API suite is currently being migrated from JSONPlaceholder smoke checks to w
 | Area | What This Shows |
 |---|---|
 | UI automation | SauceDemo login, inventory, cart, and checkout workflows |
-| API automation | REST API migration in progress: JSONPlaceholder legacy checks moving to DummyJSON auth, products, carts, plus planned local checkout simulation |
+| API automation | Current JSONPlaceholder `/posts` coverage via reusable client, plus Postman scaffolding for future REST expansion |
 | Test design | Manual UI + API workbook with 18 documented cases |
 | Framework structure | Pytest fixtures, Selenium Page Object Model, reusable API client |
 | Reporting | Console progress logs, HTML reports, Allure results, failure screenshots |
-| CI readiness | GitHub Actions workflow for headless browser execution |
-| Quality signal | 14 logical tests; UI tests can run across Chrome and Firefox |
+| CI readiness | GitHub Actions workflow for headless Chrome UI execution with HTML and JSON report artifacts |
+| Quality signal | 14 logical tests total (10 UI, 4 API); default `pytest` runs the 10 UI tests across Chrome and Firefox |
 
 ---
 
@@ -54,17 +54,20 @@ The API suite is currently being migrated from JSONPlaceholder smoke checks to w
 | Portfolio Asset | Link |
 |---|---|
 | Manual UI and API workbook | [docs/saucedemo_manual_test_cases_with_api.xlsx](docs/saucedemo_manual_test_cases_with_api.xlsx) |
-| API testing scope (current legacy scope) | [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md) |
+| API testing scope (current automated scope) | [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md) |
 | Login UI test notes | [test_artifacts/ui_login_test_cases.md](test_artifacts/ui_login_test_cases.md) |
 | Checkout UI test notes | [test_artifacts/ui_checkout_test_cases.md](test_artifacts/ui_checkout_test_cases.md) |
-| API test implementation (current legacy scope) | [tests/api/test_posts_api.py](tests/api/test_posts_api.py) |
+| API test implementation (current automated scope) | [tests/api/test_posts_api.py](tests/api/test_posts_api.py) |
 | Checkout test implementation | [tests/ui/test_checkout.py](tests/ui/test_checkout.py) |
 | API client | [api/base_api_client.py](api/base_api_client.py) |
+| Postman workspace scaffold | [.postman/resources.yaml](.postman/resources.yaml) |
+| Postman environment scaffold | [postman/environments/New Environment.environment.yaml](postman/environments/New%20Environment.environment.yaml) |
+| Postman globals scaffold | [postman/globals/workspace.globals.yaml](postman/globals/workspace.globals.yaml) |
 | UI tests | [tests/ui/](tests/ui/) |
 | Page objects | [pages/](pages/) |
 | CI workflow | [.github/workflows/python-test.yml](.github/workflows/python-test.yml) |
 
-The API workbook and scope notes are being refreshed to map directly to `TC_API_001` through `TC_API_008` as the new REST cases land.
+The manual workbook tracks broader future API scenarios under `TC_API_001` through `TC_API_008`; the current automated API suite in this repo still targets JSONPlaceholder `/posts`.
 
 ---
 
@@ -74,7 +77,7 @@ The API workbook and scope notes are being refreshed to map directly to `TC_API_
 |---|---|
 | Language | Python |
 | Test runner | Pytest |
-| UI automation | Selenium WebDriver, Chrome, webdriver-manager |
+| UI automation | Selenium WebDriver, Chrome, Firefox, webdriver-manager |
 | API automation | requests |
 | Reporting | pytest-html, pytest-json-report, allure-pytest |
 | Architecture | Page Object Model, shared fixtures, reusable client classes |
@@ -90,27 +93,26 @@ The API workbook and scope notes are being refreshed to map directly to `TC_API_
 | Inventory UI | Product sorting and product details | Price ordering, item count stability, detail page data consistency |
 | Cart UI | Add, remove, and reset state | Badge count, cart contents, removal sync, reset app state behavior |
 | Checkout UI | Successful checkout, validation, and `error_user` behavior | Overview item consistency, required-field validation, completion state observation |
-| API automation | Current JSONPlaceholder smoke checks; migration in progress | Next target: auth, inventory, cart, and checkout-aligned REST cases |
+| API automation | Current JSONPlaceholder `/posts` coverage through the shared API client | `GET /posts`, `GET /posts/1`, `POST /posts`, and `DELETE /posts/1` with response validation |
 
-See [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md) for the current legacy automated API scope while the workflow-aligned REST suite is being added.
+See [test_artifacts/api_posts_test_cases.md](test_artifacts/api_posts_test_cases.md) for the current automated API scope. Broader future API coverage is documented in the workbook and Postman assets, not yet implemented in `tests/api/test_posts_api.py`.
 
 ---
 
-## 🗺️ API Migration Roadmap
+## 🗺️ Planned API Expansion
 
-- `TC_API_001` / `TC_API_002`: auth login success and failure via DummyJSON
-- `TC_API_003` / `TC_API_004` / `TC_API_005`: product list, product detail, and invalid product ID coverage
-- `TC_API_006` / `TC_API_007`: cart add and cart update/remove simulation
-- `TC_API_008`: local checkout simulator for validation behavior
+The workbook and Postman scaffolding reserve future API cases under `TC_API_001` through `TC_API_008`.
+
+Those cases are planned project scope, not part of the current automated pytest API suite.
 
 ---
 
 ## ✅ Current Checkpoint
 
-Latest single-browser full-suite checkpoint:
+Latest verified single-browser full-suite checkpoint:
 
 ```bash
-HEADLESS=True pytest -m "ui or api"
+HEADLESS=True pytest -m "ui or api" --browser chrome
 ```
 
 Latest verified result:
@@ -120,6 +122,8 @@ Latest verified result:
 ```
 
 The expected `xfail` documents SauceDemo `error_user` checkout behavior. It is intentionally tracked because the abnormal behavior is useful QA evidence, not a hidden failure.
+
+Default `pytest` behavior is different from the checkpoint above: `pytest.ini` excludes `api` by default, and the root `conftest.py` fans UI tests out across `chrome,firefox`.
 
 ---
 
@@ -192,7 +196,7 @@ qa-automation-framework/
 
 - Python 3.9+
 - pip
-- Chrome for UI execution
+- Chrome or Firefox for UI execution
 
 ### Installation
 
@@ -234,13 +238,14 @@ Notes:
 
 | Goal | Command |
 |---|---|
-| Default UI run across Chrome and Firefox | `pytest` |
+| Default UI matrix run across Chrome and Firefox | `pytest` |
 | All UI tests across Chrome and Firefox | `pytest tests/ui` |
 | UI tests in Chrome | `pytest tests/ui --browser chrome` |
 | UI tests in Firefox | `pytest tests/ui --browser firefox` |
 | UI tests in both browsers explicitly | `pytest tests/ui --browser chrome,firefox` |
+| Full suite in one browser | `pytest -m "ui or api" --browser chrome` |
+| Full suite with default UI browser matrix | `pytest -m "ui or api"` |
 | API tests only | `pytest -m api` |
-| UI + API together | `pytest -m "ui or api"` |
 | Login tests | `pytest tests/ui/test_login.py` |
 | Checkout tests | `pytest tests/ui/test_checkout.py` |
 | API posts tests | `pytest tests/api/test_posts_api.py -m api` |
@@ -285,12 +290,13 @@ The GitHub Actions workflow in [.github/workflows/python-test.yml](.github/workf
 
 - runs on pushes and pull requests to `main`
 - installs dependencies
-- executes UI tests with JSON and self-contained HTML reporting enabled
+- executes UI tests only, in headless Chrome, with JSON and self-contained HTML reporting enabled
 - uploads the generated `reports/` directory as a build artifact
 
 The workflow sets:
 
 - `BASE_URL=https://www.saucedemo.com`
+- `BROWSER=chrome`
 - `HEADLESS=true`
 
 ---
@@ -307,6 +313,9 @@ The workflow sets:
 | [test_artifacts/ui_login_test_cases.md](test_artifacts/ui_login_test_cases.md) | Login UI testing scope |
 | [test_artifacts/saucedemo_manual_test_cases_regenerated.md](test_artifacts/saucedemo_manual_test_cases_regenerated.md) | Manual SauceDemo E2E scenarios |
 | [test_artifacts/matrices/feature_coverage_matrix.xlsx](test_artifacts/matrices/feature_coverage_matrix.xlsx) | Coverage matrix |
+| [.postman/resources.yaml](.postman/resources.yaml) | Postman local workspace registration |
+| [postman/environments/New Environment.environment.yaml](postman/environments/New%20Environment.environment.yaml) | Starter Postman environment |
+| [postman/globals/workspace.globals.yaml](postman/globals/workspace.globals.yaml) | Starter Postman globals |
 
 Generated runtime output may appear in `reports/`, `allure-results/`, and `screenshots/`; those outputs are ignored by Git except for placeholder files.
 

@@ -33,7 +33,7 @@ These are suitable as:
 |---|---|
 | Application | SauceDemo |
 | URL | https://www.saucedemo.com/ |
-| Browser | Chrome / Edge / Firefox |
+| Browser | Chrome / Firefox |
 | Test Level | End-to-End |
 | Test Type | Manual Functional Testing |
 | Suggested Evidence | Screenshots of each major checkpoint |
@@ -50,7 +50,7 @@ These are suitable as:
 | Valid Password | `secret_sauce` |
 | Invalid Password | `wrong_password` |
 | First Name | Anton |
-| Last Name | Tester |
+| Last Name | Buyer |
 | Postal Code | 98042 |
 
 ---
@@ -105,7 +105,7 @@ Verify a user can log in, add one item to the cart, complete checkout, and see o
 - Username: `standard_user`
 - Password: `secret_sauce`
 - First Name: `Anton`
-- Last Name: `Tester`
+- Last Name: `Buyer`
 - Postal Code: `98042`
 
 ## Steps and Expected Results
