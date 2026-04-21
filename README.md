@@ -163,8 +163,7 @@ qa-automation-framework/
 ├── api/
 │   └── base_api_client.py
 ├── config/
-│   ├── config.py
-│   └── conftest.py
+│   └── config.py
 ├── docs/
 │   └── saucedemo_manual_test_cases_with_api.xlsx
 ├── allure-results/
@@ -177,11 +176,9 @@ qa-automation-framework/
 ├── reports/
 ├── test_artifacts/
 │   ├── api_posts_test_cases.md
-│   ├── ci_cd_tool_recommendation.md
 │   ├── saucedemo_manual_test_cases_regenerated.md
 │   ├── ui_checkout_test_cases.md
-│   ├── ui_login_test_cases.md
-│   └── matrices/
+│   └── ui_login_test_cases.md
 ├── tests/
 │   ├── api/
 │   │   └── test_posts_api.py
@@ -322,7 +319,6 @@ The workflow sets:
 | [test_artifacts/ui_checkout_test_cases.md](test_artifacts/ui_checkout_test_cases.md) | Checkout UI testing scope |
 | [test_artifacts/ui_login_test_cases.md](test_artifacts/ui_login_test_cases.md) | Login UI testing scope |
 | [test_artifacts/saucedemo_manual_test_cases_regenerated.md](test_artifacts/saucedemo_manual_test_cases_regenerated.md) | Manual SauceDemo E2E scenarios |
-| [test_artifacts/matrices/feature_coverage_matrix.xlsx](test_artifacts/matrices/feature_coverage_matrix.xlsx) | Coverage matrix |
 | [.postman/resources.yaml](.postman/resources.yaml) | Postman local workspace registration |
 | [postman/environments/New Environment.environment.yaml](postman/environments/New%20Environment.environment.yaml) | Starter Postman environment |
 | [postman/globals/workspace.globals.yaml](postman/globals/workspace.globals.yaml) | Starter Postman globals |
